@@ -15,6 +15,7 @@ int main() {
 
     // Sum of first n natural numbers
     int expected_sum = n * (n + 1) / 2;
+    
 
     // Missing number
     int missing = expected_sum - sum;
