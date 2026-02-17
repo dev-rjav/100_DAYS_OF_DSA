@@ -1,6 +1,8 @@
 
 #include <stdio.h>
 
+void rotateMatrix(int arr[5][5]);
+
 int main() {
     int arr[5][5];
     printf("Enter elements:\n");
