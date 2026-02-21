@@ -1,30 +1,29 @@
- 
 #include <stdio.h>
 
-void rotate_array(int arr[], int n, int k) {
-    // Initialize the temporary array
-    int temp[n];
+int main() {
+    int n, k;
+    scanf("%d", &n);
+
+    int arr[n];
     for (int i = 0; i < n; i++) {
-        temp[i] = arr[i];
+        scanf("%d", &arr[i]);
     }
 
-    // Rotate the elements of the original array
+    scanf("%d", &k);
+
+    // Rotate the array to the right by k positions
     for (int i = 0; i < k; i++) {
-        int firstElement = temp[0];
-        for (int j = 0; j < n - 1; j++) {
-            temp[j] = temp[j + 1];
+        int temp = arr[n - 1];
+        for (int j = n - 2; j >= 0; j--) {
+            arr[j + 1] = arr[j];
         }
-        temp[n - 1] = firstElement;
+        arr[0] = temp;
     }
 
     // Print the rotated array
     for (int i = 0; i < n; i++) {
-        printf("%d ", temp[i]);
+        printf("%d ", arr[i]);
     }
-}
 
-int main() {
-    int arr[] = {1, 2, 3, 4, 5};
-    rotate_array(arr, 5, 2);
     return 0;
 }
