@@ -1,12 +1,29 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 
 struct node {
     int data;
-    struct node* next;
+    struct node *next;
 };
 
-void printList(struct node* head) {
+void insertAtEnd(struct node **head, int new_data) {
+    struct node *new_node = (struct node *)malloc(sizeof(struct node));
+    new_node->data = new_data;
+    new_node->next = NULL;
+
+    if (*head == NULL) {
+        *head = new_node;
+    } else {
+        struct node *temp = *head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = new_node;
+    }
+}
+
+void printList(struct node *head) {
     while (head != NULL) {
         printf("%d ", head->data);
         head = head->next;
@@ -14,29 +31,15 @@ void printList(struct node* head) {
 }
 
 int main() {
-    struct node* head = NULL;
-    int n, i, data;
-    scanf("%d", &n);
+    struct node *head = NULL;
+    int new_data, i;
 
-    // Input the linked list elements
-    for (i = 0; i < n; i++) {
-        scanf("%d", &data);
-        if (head == NULL) {
-            head = malloc(sizeof(struct node));
-            head->data = data;
-            head->next = NULL;
-        } else {
-            struct node* current = head;
-            while (current->next != NULL) {
-                current = current->next;
-            }
-            current->next = malloc(sizeof(struct node));
-            current->data = data;
-            current->next = NULL;
-        }
+    for (i = 0; i < 10; i++) {
+        printf("Enter element %d: ", i + 1);
+        scanf("%d", &new_data);
+        insertAtEnd(&head, new_data);
     }
 
-    // Print the linked list elements
     printList(head);
 
     return 0;
