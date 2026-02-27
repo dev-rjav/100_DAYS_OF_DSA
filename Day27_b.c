@@ -2,64 +2,65 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Node {
+struct Node {
     int data;
     struct Node* next;
-} Node;
+};
 
-void removeCycle(Node** head) {
-    // Check if the list is empty or has only one node
-    if (*head == NULL || (*head)->next == NULL) {
-        return;
-    }
+void remove_cycle(struct Node* head) {
+    struct Node* slow = head;
+    struct Node* fast = head;
 
-    // Find the cycle
-    Node* slow = *head;
-    Node* fast = (*head)->next->next;
-    while (slow != fast) {
+    while (fast != NULL && fast->next != NULL) {
         slow = slow->next;
         fast = fast->next->next;
+
+        if (slow == fast) {
+            break;
+        }
     }
 
-    // Check if the cycle is not just a self-loop
-    if (slow == *head) {
-        return;
-    }
+    if (slow == fast) {
+        struct Node* temp = head;
 
-    // Find the start of the cycle
-    Node* cycleStart = slow;
-    while (cycleStart->next != slow) {
-        cycleStart = cycleStart->next;
-    }
+        while (temp->next != slow) {
+            temp = temp->next;
+        }
 
-    // Remove the cycle
-    cycleStart->next = NULL;
+        temp->next = NULL;
+    }
 }
 
 int main() {
+    struct Node* head = NULL;
     int n, i;
-    Node* head = NULL;
-    Node* temp = NULL;
 
-    // Get the number of nodes in the list
-    printf("Enter the number of nodes in the list: ");
+    printf("Enter the number of nodes: ");
     scanf("%d", &n);
 
-    // Create a linked list with n nodes
     for (i = 0; i < n; i++) {
-        temp = malloc(sizeof(Node));
-        temp->data = i + 1;
-        temp->next = head;
-        head = temp;
+        struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+        new_node->data = i + 1;
+        new_node->next = head;
+        head = new_node;
     }
 
-    // Remove the cycle in the linked list
-    removeCycle(&head);
+    printf("The linked list is: ");
+    struct Node* temp = head;
 
-    // Print the linked list
-    printf("Linked List: ");
-    for (temp = head; temp != NULL; temp = temp->next) {
+    while (temp != NULL) {
         printf("%d ", temp->data);
+        temp = temp->next;
+    }
+
+    remove_cycle(head);
+
+    printf("\nAfter removing cycle: ");
+    temp = head;
+
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
     }
 
     return 0;
