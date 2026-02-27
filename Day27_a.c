@@ -1,68 +1,98 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-// Structure to represent a node in the linked list
-typedef struct node {
+struct Node {
     int data;
-    struct node *next;
-} Node;
+    struct Node* next;
+};
 
-// Function to calculate length of the linked list
-int getLength(Node *head) {
-    int len = 0;
-    while (head != NULL) {
-        len++;
-        head = head->next;
-    }
-    return len;
+// Function to create a new node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
 }
 
 // Function to find intersection point of two linked lists
-void findIntersection(Node *list1, Node *list2) {
-    int diff = getLength(list1) - getLength(list2);
-    if (diff > 0) {
-        while (diff--) list1 = list1->next;
-    } else if (diff < 0) {
-        diff = -diff;
-        while (diff--) list2 = list2->next;
+struct Node* findIntersection(struct Node* head1, struct Node* head2) {
+    // Calculate lengths of both lists
+    int length1 = 0, length2 = 0;
+    struct Node* temp1 = head1, *temp2 = head2;
+    while (temp1 != NULL) {
+        length1++;
+        temp1 = temp1->next;
     }
-    while (list1 != NULL && list2 != NULL) {
-        if (list1 == list2) break;
-        list1 = list1->next;
-        list2 = list2->next;
+    while (temp2 != NULL) {
+        length2++;
+        temp2 = temp2->next;
     }
-    printf("Intersection point: %d\n", list1 ? list1->data : -1);
+    
+    // Advance pointer in longer list
+    if (length1 > length2) {
+        for (int i = 0; i < length1 - length2; i++) {
+            head1 = head1->next;
+        }
+    } else if (length2 > length1) {
+        for (int i = 0; i < length2 - length1; i++) {
+            head2 = head2->next;
+        }
+    }
+    
+    // Traverse both lists simultaneously
+    while (head1 != NULL && head2 != NULL) {
+        if (head1 == head2) {
+            return head1;
+        }
+        head1 = head1->next;
+        head2 = head2->next;
+    }
+    
+    // No intersection found
+    return NULL;
 }
 
 int main() {
-    Node *list1 = NULL, *list2 = NULL;
-    int n, m, i;
-
-    // Get input for first linked list
+    int n, m;
     scanf("%d", &n);
-    for (i = 0; i < n; i++) {
+    struct Node* head1 = NULL, *head2 = NULL;
+    for (int i = 0; i < n; i++) {
         int data;
         scanf("%d", &data);
-        Node *node = (Node *)malloc(sizeof(Node));
-        node->data = data;
-        node->next = list1;
-        list1 = node;
+        if (head1 == NULL) {
+            head1 = createNode(data);
+        } else {
+            struct Node* temp = head1;
+            while (temp->next != NULL) {
+                temp = temp->next;
+            }
+            temp->next = createNode(data);
+        }
     }
-
-    // Get input for second linked list
+    
     scanf("%d", &m);
-    for (i = 0; i < m; i++) {
+    for (int i = 0; i < m; i++) {
         int data;
         scanf("%d", &data);
-        Node *node = (Node *)malloc(sizeof(Node));
-        node->data = data;
-        node->next = list2;
-        list2 = node;
+        if (head2 == NULL) {
+            head2 = createNode(data);
+        } else {
+            struct Node* temp = head2;
+            while (temp->next != NULL) {
+                temp = temp->next;
+            }
+            temp->next = createNode(data);
+        }
     }
-
-    // Find intersection point of two linked lists
-    findIntersection(list1, list2);
-
+    
+    // Find intersection point of the two lists
+    struct Node* intersection = findIntersection(head1, head2);
+    
+    if (intersection != NULL) {
+        printf("Intersection point: %d\n", intersection->data);
+    } else {
+        printf("No Intersection\n");
+    }
+    
     return 0;
 }

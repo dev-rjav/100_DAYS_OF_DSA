@@ -2,65 +2,54 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Node {
+struct node {
     int data;
-    struct Node* next;
+    struct node *next;
 };
 
-void remove_cycle(struct Node* head) {
-    struct Node* slow = head;
-    struct Node* fast = head;
-
-    while (fast != NULL && fast->next != NULL) {
-        slow = slow->next;
-        fast = fast->next->next;
-
-        if (slow == fast) {
-            break;
-        }
+void removeCycle(struct node *head) {
+    // check if list is empty or has only one node
+    if (head == NULL || head->next == NULL) {
+        return;
     }
 
-    if (slow == fast) {
-        struct Node* temp = head;
-
-        while (temp->next != slow) {
-            temp = temp->next;
-        }
-
-        temp->next = NULL;
+    // get the last node in the list
+    struct node *last = head;
+    while (last->next != NULL) {
+        last = last->next;
     }
+
+    // check if there is a cycle in the list
+    struct node *cur = head;
+    while (cur != last) {
+        cur = cur->next;
+    }
+
+    // remove the cycle by making the last node point to NULL
+    last->next = NULL;
 }
 
 int main() {
-    struct Node* head = NULL;
-    int n, i;
-
-    printf("Enter the number of nodes: ");
+    int n;
     scanf("%d", &n);
 
-    for (i = 0; i < n; i++) {
-        struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
-        new_node->data = i + 1;
-        new_node->next = head;
-        head = new_node;
+    struct node *head = NULL;
+    for (int i = 0; i < n; i++) {
+        // create a new node and add it to the list
+        struct node *newNode = malloc(sizeof(struct node));
+        newNode->data = i + 1;
+        newNode->next = head;
+        head = newNode;
     }
 
-    printf("The linked list is: ");
-    struct Node* temp = head;
+    // remove cycle in the linked list
+    removeCycle(head);
 
-    while (temp != NULL) {
-        printf("%d ", temp->data);
-        temp = temp->next;
-    }
-
-    remove_cycle(head);
-
-    printf("\nAfter removing cycle: ");
-    temp = head;
-
-    while (temp != NULL) {
-        printf("%d ", temp->data);
-        temp = temp->next;
+    // print the linked list
+    struct node *cur = head;
+    while (cur != NULL) {
+        printf("%d ", cur->data);
+        cur = cur->next;
     }
 
     return 0;
