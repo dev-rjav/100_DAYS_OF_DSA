@@ -2,70 +2,71 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Node {
+typedef struct Node {
     int data;
     struct Node* next;
-};
+} Node;
 
-// Function to rotate a linked list right by k places
-void rotateRight(struct Node** head, int k) {
-    // If the list is empty or has only one node, return
-    if (*head == NULL || (*head)->next == NULL) {
-        return;
+Node* rotate_list(Node* head, int k) {
+    if (head == NULL || head->next == NULL) {
+        return head;
     }
 
-    // Find the tail of the list
-    struct Node* tail = *head;
-    while (tail->next != NULL) {
-        tail = tail->next;
+    // Find the last node in the list
+    Node* current = head;
+    while (current->next != NULL) {
+        current = current->next;
     }
 
-    // Connect the last node to the head forming a circular list
-    tail->next = *head;
+    // Connect the last node to the first node, forming a circular list
+    current->next = head;
 
-    // Find the (n-k+1)th node from the tail and set its next to NULL
-    struct Node* newHead = *head;
-    int count = 0;
-    while (count < k) {
-        newHead = newHead->next;
-        count++;
+    // Traverse to the (n-k)th node and set its next pointer to NULL
+    int i = 0;
+    while (i < k - 1) {
+        current = current->next;
+        i++;
     }
-    newHead->next = NULL;
+    Node* last_node = current->next;
+    current->next = NULL;
 
-    // Update the head pointer to the (n-k+1)th node
-    *head = newHead;
+    // Update the head pointer to point to the (n-k+1)th node
+    head = last_node->next;
+
+    return head;
 }
 
-// Function to print a linked list
-void printList(struct Node* head) {
-    struct Node* current = head;
+int main() {
+    int n, k;
+    scanf("%d", &n);
+
+    Node* head = NULL;
+    for (int i = 0; i < n; i++) {
+        int data;
+        scanf("%d", &data);
+        if (head == NULL) {
+            head = (Node*)malloc(sizeof(Node));
+            head->data = data;
+            head->next = NULL;
+        } else {
+            Node* current = head;
+            while (current->next != NULL) {
+                current = current->next;
+            }
+            current->next = (Node*)malloc(sizeof(Node));
+            current->next->data = data;
+            current->next->next = NULL;
+        }
+    }
+
+    scanf("%d", &k);
+    head = rotate_list(head, k);
+
+    Node* current = head;
     while (current != NULL) {
         printf("%d ", current->data);
         current = current->next;
     }
-    printf("\n");
-}
-
-int main() {
-    // Create a linked list with n nodes
-    int n, k;
-    scanf("%d", &n);
-    struct Node* head = NULL;
-    for (int i = 0; i < n; i++) {
-        int data;
-        scanf("%d", &data);
-        struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-        newNode->data = data;
-        newNode->next = head;
-        head = newNode;
-    }
-
-    // Rotate the linked list right by k places
-    scanf("%d", &k);
-    rotateRight(&head, k);
-
-    // Print the rotated linked list
-    printList(head);
 
     return 0;
 }
